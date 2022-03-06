@@ -1,0 +1,9 @@
+*.env
+*.vscode
+*__pycache__
+*.pkl
+*.bak
+
+df_generator/__pycache__
+df_generator/files/tlsh
+df_generator/files/tlsh.zip

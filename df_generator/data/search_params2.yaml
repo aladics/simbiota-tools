@@ -1,0 +1,159 @@
+forest:
+  n_estimators: 
+    type: "uniform_int"
+    from: 1
+    to: 100
+  max_depth:
+    type: "uniform_int"
+    from: 2
+    to: 30
+  criterion:
+    type: "multi"
+    values:
+      - "gini"
+      - "entropy"
+adaboost:
+  n_estimators: 
+    type: "uniform_int"
+    from: 5
+    to: 25
+  learning_rate:
+    type: "multi"
+    values:
+      - 0.0001
+      - 0.005
+      - 0.05
+      - 1
+      - 10
+cdnnc:
+  layers:
+    type: "multi"
+    values:
+      - 1
+      - 3
+  neurons:
+    type: "multi"
+    values:
+      - 10
+      - 50
+      - 100
+      - 200
+  lr:
+    type: "multi"
+    values:
+      - 0.0001
+      - 0.005
+      - 0.05
+      - 1
+      - 10
+  max_misses:
+    type: "multi"
+    values:
+      - 3
+      - 4
+      - 5
+knn:
+  n_neighbors:
+    type: "multi"
+    values:
+      - 3
+      - 5
+      - 10
+      - 15
+      - 20
+      - 30
+      - 40
+  weights:
+    type: "multi"
+    values:
+      - "distance"
+      - "uniform"
+logistic:
+  solver:
+    type: "multi"
+    values:
+      - "newton-cg"
+      - "lbfgs"
+      - "liblinear"
+  C:
+    type: "multi"
+    values:
+      - 0.01
+      - 0.1
+      - 0.5
+      - 2
+  penalty:
+    type: "multi"
+    values:
+      - "l1"
+      - "l2"
+  tol:
+    type: "multi"
+    values:
+      - 0.0001
+      - 0.005
+      - 0.01
+sdnnc:
+  layers:
+    type: "uniform_int"
+    from: 1
+    to: 7
+  neurons:
+    type: "multi"
+    values:
+      - 10
+      - 50
+      - 100
+      - 200
+  epochs:
+    type: "multi"
+    values:
+      - 5
+      - 10
+  lr:
+    type: "multi"
+    values:
+      - 0.0001
+      - 0.005
+      - 0.05
+      - 1 
+svm:
+  C: 
+    type: "uniform_float"
+    from: 0.01
+    to: 5
+  kernel:
+    type: "multi"
+    values:
+      - "poly"
+      - "linear"
+      - "rbf"
+  degree: 
+    type: "uniform_int"
+    depends_on: 
+      kernel:
+        values:
+          "poly"
+    from: 1
+    to: 10
+  gamma:
+    type: "uniform_float"
+    depends_on: 
+      kernel:
+        values:
+          "rbf"
+    from: 0.01
+    to: 2
+tree:
+  max_depth:
+    type: "multi"
+    values:
+      - 3
+      - 8
+      - 15
+      - 50
+  criterion:
+    type: "multi"
+    values:
+      - "gini"
+      - "entropy"
