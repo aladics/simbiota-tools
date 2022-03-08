@@ -7,6 +7,8 @@ from copy import deepcopy
 import time
 
 DBH_PATH_STR = "F:/work/kutatas/dwf/dwf_now/DeepWaterFramework/DeepBugHunter"
+if not Path(DBH_PATH_STR).exists():
+    raise ValueError(f"Invalid DBH Path, set it accordingly in {__file__}")
 sys.path.append(DBH_PATH_STR)
 
 from tests.res import params
@@ -41,10 +43,9 @@ class TaskFactory:
         if model_name == "forest":
             model_params =  params.ForestParams(**sargs)
             
-        if model_name != "cdncc" and model_name != "sdnnc":
+        if model_name != "cdnnc" and model_name != "sdnnc":
             learn_task = LearnTask(self.shared_params)
             learn_task.params = model_params.get()
-            learn_task.set_save_model_path("")
 
         else:
             sandbox_path = Path("sandboxes")
@@ -52,6 +53,8 @@ class TaskFactory:
 
             learn_task = self.DNNCLearnTask(self.shared_params, str((sandbox_path / model_name).resolve()))
             learn_task.params = params.SDNNCParams(sandbox = learn_task.sandbox).get()
+        
+        learn_task.set_save_model_path("")
 
         return learn_task
 
@@ -153,7 +156,7 @@ def generate_model(model_name, raw_params, shared_params, save_path, train_file,
 @click.option("--save-path", default = "save_files")
 @click.option("--train-file", required=True)
 @click.option("--test-file", required=True)
-@click.option("--n", default = 100)
+@click.option("--n", default = 100, help = "Number of randomly parametrized models to generate")
 def run(search_params, save_path, train_file, test_file, n):
     with Path(search_params).open() as f:
         params = yaml.safe_load(f)
@@ -180,9 +183,13 @@ def run(search_params, save_path, train_file, test_file, n):
         'return_results' : True        
     }
 
+    time_stats = {}
     for key, val in params.items():
+        start = time.time()
         generate_model(key, val, shared_params, save_path, train_file, test_file, n)
+        time_stats[key] = time.time() - start
 
+    return time_stats
     
 
 if __name__ == "__main__":

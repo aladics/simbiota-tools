@@ -21,10 +21,10 @@ def main(sources, result):
     """Merge and prepare tlsh csv files (SOURCES) and save them in a file (RESULT)."""
     dfs = (pd.read_csv(src, header=None, delimiter=",") for src in sources)
     final_df = pd.concat(dfs).sample(frac=1, random_state=RANDOM_SEED)
+    final_df.columns = generate_header()
+    final_df = final_df.drop(labels = "sha", axis = 1)
+    final_df.to_csv(Path(result).resolve(), index = False)
     
-    final_df.to_csv(Path(result).resolve(), index = False, header = generate_header())
-    
-
 
 if __name__ == "__main__":
     main()
