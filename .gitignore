@@ -4,8 +4,10 @@
 *.pkl
 *.bak
 *.csv
+*.log
 **/test
 
+sandboxes
 df_generator/output
 df_generator/files/tlsh
 df_generator/files/tlsh.zip
@@ -13,4 +15,4 @@ df_generator/data/output
 df_generator/data/testing
 df_generator/data/save_files
 df_generator/data/final/
-sandboxes
+df_generator/config.yaml

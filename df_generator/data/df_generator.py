@@ -5,18 +5,36 @@ from shutil import rmtree
 import random
 from copy import deepcopy
 import time
-
-DBH_PATH_STR = "F:/work/kutatas/dwf/dwf_now/DeepWaterFramework/DeepBugHunter"
-if not Path(DBH_PATH_STR).exists():
-    raise ValueError(f"Invalid DBH Path, set it accordingly in {__file__}")
-sys.path.append(DBH_PATH_STR)
-
-from tests.res import params
-from tests.res.runner import LearnTask, run_train_test_pair, save_results_to_json
+import logging
 
 import yaml
 import click
 import numpy as np
+
+
+############################################# CONSTANS #############################################
+CONFIG_PATH = "config.yaml"
+
+DBH_PATH_STR = None
+
+#####################################################################################################
+
+def set_dbh_path():
+    global DBH_PATH_STR
+    with Path(CONFIG_PATH).open("r") as f:
+        config = yaml.safe_load(f)
+    
+    DBH_PATH_STR = config['dbh_path']
+    
+    if not Path(DBH_PATH_STR).exists():
+        raise ValueError(f"Invalid DBH Path, set it accordingly in {CONFIG_PATH}")
+    
+    sys.path.append(str(Path(DBH_PATH_STR).resolve()))
+    
+set_dbh_path()
+from tests.res import params
+from tests.res.runner import LearnTask, run_train_test_pair, save_results_to_json
+
 
 class TaskFactory:
     class DNNCLearnTask(LearnTask):
@@ -37,23 +55,29 @@ class TaskFactory:
         self.shared_params = shared_params
 
     def get(self, model_name, sargs):
+        if model_name != "cdnnc" and model_name != "sdnnc":
+            learn_task = LearnTask(self.shared_params)
+        else:
+            sandbox_path = Path("sandboxes")
+            sandbox_path.mkdir(exist_ok=True, parents=True)
+            sargs['sandbox'] = str(sandbox_path.resolve())
+
+            learn_task = self.DNNCLearnTask(self.shared_params, str((sandbox_path / model_name).resolve()))
+       
         model_params = None
         if model_name == "svm":
             model_params =  params.SVMParams(**sargs)            
         if model_name == "forest":
             model_params =  params.ForestParams(**sargs)
+        if model_name == "sdnnc":
+            model_params = params.SDNNCParams(**sargs)
+        if model_name == "cdnnc":
+            model_params = params.CDNNCParams(**sargs)
+        if model_name == "adaboost":
+            model_params = params.AdaboostParams(**sargs)
             
-        if model_name != "cdnnc" and model_name != "sdnnc":
-            learn_task = LearnTask(self.shared_params)
-            learn_task.params = model_params.get()
-
-        else:
-            sandbox_path = Path("sandboxes")
-            sandbox_path.mkdir(exist_ok=True, parents=True)
-
-            learn_task = self.DNNCLearnTask(self.shared_params, str((sandbox_path / model_name).resolve()))
-            learn_task.params = params.SDNNCParams(sandbox = learn_task.sandbox).get()
-        
+            
+        learn_task.params = model_params.get()
         learn_task.set_save_model_path("")
 
         return learn_task
@@ -149,7 +173,19 @@ def generate_model(model_name, raw_params, shared_params, save_path, train_file,
     if not save_root.exists():
         save_root.mkdir(exist_ok=True, parents=True)
 
-    save_results_to_json(results, save_root / (model_name + ".json"))
+    save_results_to_json(results, save_root / (f"{model_name}_{n}.json"))
+    
+def get_logger(log_file):
+    logger = logging.getLogger('df_generator')
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter('[%(levelname)s] %(asctime)s   %(message)s', datefmt="%Y-%m-%d %H:%M:%S")
+    
+    fh = logging.FileHandler(log_file)
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+    
+    return logger
 
 @click.command()
 @click.option("--search-params", default="search_params.yaml")
@@ -157,7 +193,10 @@ def generate_model(model_name, raw_params, shared_params, save_path, train_file,
 @click.option("--train-file", required=True)
 @click.option("--test-file", required=True)
 @click.option("--n", default = 100, help = "Number of randomly parametrized models to generate")
-def run(search_params, save_path, train_file, test_file, n):
+@click.option("--log-file", default = "times.log")
+def run(search_params, save_path, train_file, test_file, n, log_file):
+    logger = get_logger(log_file)
+    
     with Path(search_params).open() as f:
         params = yaml.safe_load(f)
 
@@ -184,10 +223,14 @@ def run(search_params, save_path, train_file, test_file, n):
     }
 
     time_stats = {}
+    i = 0
     for key, val in params.items():
         start = time.time()
         generate_model(key, val, shared_params, save_path, train_file, test_file, n)
         time_stats[key] = time.time() - start
+        
+        i+=1
+        logger.info(f" {key}(rand_n = {n}): {i} done.")
 
     return time_stats
     
