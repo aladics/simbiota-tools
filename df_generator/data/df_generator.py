@@ -6,6 +6,7 @@ import random
 from copy import deepcopy
 import time
 import logging
+from math import ceil
 
 import yaml
 import click
@@ -230,7 +231,7 @@ def run(search_params, save_path, train_file, test_file, n, log_file):
         time_stats[key] = time.time() - start
         
         i+=1
-        logger.info(f" {key}(rand_n = {n}) done.")
+        logger.info(f" {key}(rand_n = {n}) done. Elapsed: {round(time_stats[key], 3)} secs ({ceil(time_stats[key] / 60)} mins)")
 
     return time_stats
     
