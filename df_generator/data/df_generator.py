@@ -193,7 +193,7 @@ def get_logger(log_file):
 @click.option("--train-file", required=True)
 @click.option("--test-file", required=True)
 @click.option("--n", default = 100, help = "Number of randomly parametrized models to generate")
-@click.option("--log-file", default = "times.log")
+@click.option("--log-file", default = "progress.log")
 def run(search_params, save_path, train_file, test_file, n, log_file):
     logger = get_logger(log_file)
     
