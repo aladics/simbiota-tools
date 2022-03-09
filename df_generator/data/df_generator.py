@@ -230,7 +230,7 @@ def run(search_params, save_path, train_file, test_file, n, log_file):
         time_stats[key] = time.time() - start
         
         i+=1
-        logger.info(f" {key}(rand_n = {n}): {i} done.")
+        logger.info(f" {key}(rand_n = {n}) done.")
 
     return time_stats
     
