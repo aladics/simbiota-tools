@@ -180,7 +180,7 @@ def generate_model(model_name, raw_params, shared_params, save_path, train_file,
         learn_task = factory.get(model_name, config)
         start = time.time()
         run_task(learn_task, results, train_file, test_file)
-        times.append(time.time() - start)
+        times.append(round(time.time() - start, 2))
     
     save_root = Path(save_path)
     if not save_root.exists():
