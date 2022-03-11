@@ -20,11 +20,19 @@ def generate_header():
 def main(sources, result):
     """Merge and prepare tlsh csv files (SOURCES) and save them in a file (RESULT)."""
     dfs = (pd.read_csv(src, header=None, delimiter=",") for src in sources)
+    
+    # Merge input CSVs, permutate rows, add header
     final_df = pd.concat(dfs).sample(frac=1, random_state=RANDOM_SEED)
     final_df.columns = generate_header()
+    
+    # Drop SHA row
     final_df = final_df.drop(labels = "sha", axis = 1)
+    
+    # Flip labels
+    final_df['label'] = final_df['label'].astype(bool)
+    final_df['label'] = (~final_df['label']).astype(int)
+    
     final_df.to_csv(Path(result).resolve(), index = False)
     
-
 if __name__ == "__main__":
     main()
