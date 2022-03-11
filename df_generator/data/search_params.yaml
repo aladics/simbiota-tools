@@ -12,50 +12,6 @@ forest:
     values:
       - "gini"
       - "entropy"
-svm:
-  C: 
-    type: "uniform_float"
-    from: 0.01
-    to: 5
-  kernel:
-    type: "multi"
-    values:
-      - "poly"
-      - "linear"
-      - "rbf"
-  degree: 
-    type: "uniform_int"
-    depends_on: 
-      kernel:
-        values:
-          "poly"
-    from: 1
-    to: 10
-  gamma:
-    type: "uniform_float"
-    depends_on: 
-      kernel:
-        values:
-          "rbf"
-    from: 0.01
-    to: 2
-cdnnc:
-  layers:
-    type: "uniform_int"
-    from: 1
-    to: 4
-  neurons:
-    type: "uniform_int"
-    from: 5
-    to: 200
-  lr:
-    type: "uniform_float"
-    from: 0.0001
-    to: 2
-  max_misses:
-    type: "uniform_int"
-    from: 2
-    to: 6
 adaboost:
   n_estimators: 
     type: "uniform_int"
@@ -121,3 +77,47 @@ tree:
     values:
       - "gini"
       - "entropy"
+svm:
+  C: 
+    type: "uniform_float"
+    from: 0.01
+    to: 5
+  kernel:
+    type: "multi"
+    values:
+      - "poly"
+      - "linear"
+      - "rbf"
+  degree: 
+    type: "uniform_int"
+    depends_on: 
+      kernel:
+        values:
+          "poly"
+    from: 1
+    to: 10
+  gamma:
+    type: "uniform_float"
+    depends_on: 
+      kernel:
+        values:
+          "rbf"
+    from: 0.01
+    to: 2
+cdnnc:
+  layers:
+    type: "uniform_int"
+    from: 1
+    to: 4
+  neurons:
+    type: "uniform_int"
+    from: 5
+    to: 200
+  lr:
+    type: "uniform_float"
+    from: 0.0001
+    to: 2
+  max_misses:
+    type: "uniform_int"
+    from: 2
+    to: 6

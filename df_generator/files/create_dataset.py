@@ -29,8 +29,7 @@ def main(sources, result):
     final_df = final_df.drop(labels = "sha", axis = 1)
     
     # Flip labels
-    final_df['label'] = final_df['label'].astype(bool)
-    final_df['label'] = (~final_df['label']).astype(int)
+    final_df['label'] = (~(final_df['label'].astype(bool))).astype(int)
     
     final_df.to_csv(Path(result).resolve(), index = False)
     
