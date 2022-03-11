@@ -76,7 +76,15 @@ class TaskFactory:
             model_params = params.CDNNCParams(**sargs)
         if model_name == "adaboost":
             model_params = params.AdaboostParams(**sargs)
-            
+        if model_name == "knn":
+            model_params = params.KNNParams(**sargs)
+        if model_name == "logistic":
+            model_params = params.LogisticParams(**sargs)
+        if model_name == "linear":
+            model_params = params.LinearParams(**sargs)
+        if model_name == "tree":
+            model_params = params.TreeParams(**sargs)
+                    
             
         learn_task.params = model_params.get()
         learn_task.set_save_model_path("")
@@ -166,20 +174,28 @@ def generate_model(model_name, raw_params, shared_params, save_path, train_file,
     configs = generate_configs(param_configs)
 
     results = []
+    times = []
     for config in configs:
+        
         learn_task = factory.get(model_name, config)
+        start = time.time()
         run_task(learn_task, results, train_file, test_file)
+        times.append(time.time() - start)
     
     save_root = Path(save_path)
     if not save_root.exists():
         save_root.mkdir(exist_ok=True, parents=True)
 
     save_results_to_json(results, save_root / (f"{model_name}_{n}.json"))
+    return times
     
 def get_logger(log_file):
     logger = logging.getLogger('df_generator')
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter('[%(levelname)s] %(asctime)s   %(message)s', datefmt="%Y-%m-%d %H:%M:%S")
+    
+    if logger.hasHandlers():
+        logger.handlers.clear()
     
     fh = logging.FileHandler(log_file)
     fh.setLevel(logging.INFO)
@@ -224,14 +240,12 @@ def run(search_params, save_path, train_file, test_file, n, log_file):
     }
 
     time_stats = {}
-    i = 0
     for key, val in params.items():
         start = time.time()
-        generate_model(key, val, shared_params, save_path, train_file, test_file, n)
+        times = generate_model(key, val, shared_params, save_path, train_file, test_file, n)
         time_stats[key] = time.time() - start
         
-        i+=1
-        logger.info(f" {key}(rand_n = {n}) done. Elapsed: {round(time_stats[key], 3)} secs ({ceil(time_stats[key] / 60)} mins)")
+        logger.info(f" {key}(rand_n = {n}) done. Elapsed: {round(time_stats[key], 3)} secs ({ceil(time_stats[key] / 60)} mins).\nExecution times per model:\n{str(times)}" )
 
     return time_stats
     
