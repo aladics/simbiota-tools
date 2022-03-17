@@ -1,0 +1,55 @@
+########################################## DATASET RELATED ##########################################
+raw_train_csvs: 
+  - train_file_1
+  - train_file_2
+result_train_csv: result_train_file
+raw_test_csvs:
+  - test_file_1
+  - test_file_2
+result_test_csv: result_test_file
+times_csvs:
+ - shas_with_times_file_1
+ - shas_with_times_file_2
+
+########################################### MODEL RELATED ###########################################
+search_params_file: search_params_file
+
+# CDF
+cdf_results_dir: json_results_dir
+cdf_func_cache_dir: cdf_cache_dir
+
+# Hyper
+hyper_results_dir: hyper_results_dir
+hyper_metaparams: 
+Smart home gateway:
+    alpha: 0.6
+    beta: 0.4
+    gamma: 0
+    delta: 0
+  Industral PLC:
+    alpha: 0.4
+    beta: 0.1
+    gamma: 0.25
+    delta: 0.25
+  Battery operated personal device:
+    alpha: 0.4
+    beta: 0.1
+    gamma: 0.4
+    delta: 0.1
+  Solar powered tiny device:
+    alpha: 0.4
+    beta: 0.1
+    gamma: 0.1
+    delta: 0.4
+  Patient monitoring sensor:
+    alpha: 0.3
+    beta: 0.2
+    gamma: 0.25
+    delta: 0.25
+
+############################################ DWF RELATED ############################################
+dbh_path : dbh_path
+
+########################################## PROJECT RELATED ##########################################
+n_models_for_cdf: 1000
+n_models_for_hyper: 100

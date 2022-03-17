@@ -14,7 +14,7 @@ import numpy as np
 
 
 ############################################# CONSTANS #############################################
-CONFIG_PATH = "config.yaml"
+CONFIG_PATH = "common/config.yaml"
 
 DBH_PATH_STR = None
 
@@ -186,7 +186,7 @@ def generate_model(model_name, raw_params, shared_params, save_path, train_file,
     if not save_root.exists():
         save_root.mkdir(exist_ok=True, parents=True)
 
-    save_results_to_json(results, save_root / (f"{model_name}_{n}.json"))
+    save_results_to_json(results, save_root / (f"{model_name}.json"))
     return times
     
 def get_logger(log_file):
@@ -205,12 +205,12 @@ def get_logger(log_file):
     return logger
 
 @click.command()
-@click.option("--search-params", default="search_params.yaml")
+@click.option("--search-params", default="common/search_params.yaml")
 @click.option("--save-path", default = "save_files")
 @click.option("--train-file", required=True)
 @click.option("--test-file", required=True)
 @click.option("--n", default = 100, help = "Number of randomly parametrized models to generate")
-@click.option("--log-file", default = "progress.log")
+@click.option("--log-file", default = "common/model_gen_progress.log")
 def run(search_params, save_path, train_file, test_file, n, log_file):
     logger = get_logger(log_file)
     

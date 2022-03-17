@@ -5,14 +5,12 @@
 *.bak
 *.csv
 *.log
+*.zip
 **/test
 
 sandboxes
-df_generator/output
-df_generator/files/tlsh
-df_generator/files/tlsh.zip
-df_generator/data/output
-df_generator/data/testing
-df_generator/data/save_files
-df_generator/data/final/
-df_generator/config.yaml
+
+common/config.yaml
+common/data/final/*
+common/data/tlsh/*
+
