@@ -2,6 +2,7 @@ from pathlib import Path
 
 import yaml
 import json
+import click
 
 import common.util as util
 import common.model_generator as model_generator
@@ -57,16 +58,19 @@ def generate_hyper_scores(config):
                 model_params, score = get_score(metaparam_vals, model_data, model_name, config)
                 scores[model_name][metaparam_name]['all'][model_params] = score
 
-                if not scores[model_name][metaparam_name]['best_score'] or scores[model_name][metaparam_name]['best_score'] > score :
+                if scores[model_name][metaparam_name]['best_score'] < score:
                     scores[model_name][metaparam_name]['best_score'] = score
                     scores[model_name][metaparam_name]['best_params'] = model_params
     
     with (Path(config['hyper_results_dir']) / 'results.json').open("w") as f:
         json.dump(scores, f)        
 
-def main():
+@click.command()
+@click.option("--generate-models/--dont-generate-models", default = True)
+def main(generate_models):
     config = util.get_config()
-    # generate_models_for_hyper(config)
+    if generate_models:
+        generate_models_for_hyper(config)
     generate_hyper_scores(config)
 
 if __name__ == "__main__":
