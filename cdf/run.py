@@ -58,12 +58,8 @@ def main():
     if not test_path.exists():
         create_dataset.main([*RAW_TEST_CSVS, TEST_CSV], standalone_mode = False)
     
-    return
-
     times = {}
     times[conf['n_models_for_cdf']] = generate_models_for_cdf(train_path, test_path, results_path, search_params_path, conf['n_models_for_cdf'])
-    #times["100"] = run_df_generator(train_path, test_path, results_path, search_params_path, 100)
-    #times["1000"] = run_df_generator(train_path, test_path, results_path, search_params_path, 1000)
     
     print(times)
     
