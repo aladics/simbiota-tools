@@ -27,6 +27,8 @@ def run(mode):
         
     if mode == "all" or mode == "hyper":
         recreate_empty_dir(Path(config['hyper_results_dir']))
+        
+    print("Environment reset done.")
     
     
 if __name__ == "__main__":

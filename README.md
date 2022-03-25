@@ -24,8 +24,10 @@ Results will be stored as specified in the config file's `cdf_results_dir` param
 Run cdf generator first. Then:
 
 ```Bash
-python -m hyper.run
+python -m hyper.run [OPTIONS]
 ```
+
+Use the `--dont-generate-models` option if only the search is needed to be run (models already exists). 
 
 Results will be stored as specified in the config file's `hyper_results_dir` param.
 
