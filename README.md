@@ -18,3 +18,10 @@ python -m cdf.run
 ```Bash
 python -m hyper.run
 ```
+
+### Run figure generator
+Generate figures containing the histogram and the plotted CDFs&PDFs.
+
+```Bash
+python -m cdf.create_figures.run
+```

@@ -14,3 +14,4 @@ common/config.yaml
 common/data/final/*
 common/data/tlsh/*
 
+cdf/create_figures/results
