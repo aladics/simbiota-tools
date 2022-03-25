@@ -13,7 +13,7 @@ def recreate_empty_dir(dir_path: Path):
     dir_path.mkdir(exist_ok=True, parents=True)
 
 @click.command()
-@click.option("--mode", type=click.Choice(['all', 'hyper', 'data', 'cdf']), case_sensitive = False, default = 'all')
+@click.option("--mode", type=click.Choice(['all', 'hyper', 'data', 'cdf'], case_sensitive = False), default = 'all')
 def run(mode):
     config = util.get_config()
     
