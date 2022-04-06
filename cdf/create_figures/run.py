@@ -56,7 +56,6 @@ def run(bins_, res_dir):
             fig.savefig(savefig_path_str)
             
             plt.close(fig)
-            continue
             
             
 if __name__ == "__main__":

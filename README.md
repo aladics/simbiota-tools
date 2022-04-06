@@ -38,3 +38,33 @@ Generate figures containing the histogram and the plotted CDFs and PDFs.
 python -m cdf.create_figures.run
 ```
 By default results will be in `cdf/create_figures/results`
+
+## Other
+
+### Supervisor related
+Configs are conventionally placed in `/etc/supervisor/conf.d`
+
+An example config with conda env activated:
+```
+[program:generate_cdf]
+ directory=<simbiota_tools_root>
+ environment=PATH="<miniconda_path>/envs/dwf_client/bin:%(ENV_PATH)s"
+ command=<miniconda_path>/envs/dwf_client/bin/python -m cdf.run
+ stderr_logfile=/var/log/generate_cdf/supervisor_run.err.log
+ stderr_logfile_maxbytes=10MB
+ stderr_logfile_backups=0
+```
+
+## Run
+
+```Bash
+sudo supervisorctl
+reread
+update
+```
+
+Then management goes like
+```Bash
+<start/stop/restart> generate_cdf
+tail generate_cdf stderr
+```

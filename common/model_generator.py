@@ -12,27 +12,9 @@ import yaml
 import click
 import numpy as np
 
-
-############################################# CONSTANS #############################################
-CONFIG_PATH = "common/config.yaml"
-
-DBH_PATH_STR = None
-
-#####################################################################################################
-
-def set_dbh_path():
-    global DBH_PATH_STR
-    with Path(CONFIG_PATH).open("r") as f:
-        config = yaml.safe_load(f)
-    
-    DBH_PATH_STR = config['dbh_path']
-    
-    if not Path(DBH_PATH_STR).exists():
-        raise ValueError(f"Invalid DBH Path, set it accordingly in {CONFIG_PATH}")
-    
-    sys.path.append(str(Path(DBH_PATH_STR).resolve()))
-    
-set_dbh_path()
+from common import util
+ 
+util.set_dbh_path()
 from tests.res import params
 from tests.res.runner import LearnTask, run_train_test_pair, save_results_to_json
 
@@ -50,7 +32,6 @@ class TaskFactory:
         def post_run(self):
             if Path(self.sandbox).exists():
                 rmtree(str(Path(self.sandbox).resolve()))
-            pass
 
     def __init__(self, shared_params):
         self.shared_params = shared_params

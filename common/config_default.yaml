@@ -47,6 +47,28 @@ Smart home gateway:
     gamma: 0.25
     delta: 0.25
 
+
+############################################ EVAL RELATED ###########################################
+
+# path to the architecture
+weekly_root_dir: <...>/features/tlsh/
+eval_dir: <...>/common/data/final/eval
+eval_progress_json: eval_progress.json
+sandbox_root: <...>/common/data/sandbox
+task_id_pattern: tlsh_<architecture>_<n_run>_<n_week>
+
+architecture_types: [
+  "arm",
+  "mips"
+]
+
+start_week: 38
+end_week: 89
+start_run: 1
+end_run: 12
+weekly_prefix: <architecture>_<label>_week_
+boosting_filename: <architecture>_<label>_boosting
+
 ############################################ DWF RELATED ############################################
 dbh_path : dbh_path
 
