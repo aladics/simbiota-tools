@@ -7,7 +7,7 @@ from common import util
 from evaluate.task_factory import TaskFactory
 from evaluate import init_input
     
-from tests.res.runner import run_train_test_pair
+from dbh_api.res.runner import run_train_test_pair
 
 class NpEncoder(json.JSONEncoder):
         def default(self, obj):
