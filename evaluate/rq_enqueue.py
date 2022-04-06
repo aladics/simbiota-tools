@@ -20,4 +20,3 @@ def enqueue_all_architecutres_by_week(queue, usecase_type):
                 
 if __name__ == "__main__":
     run()
-    

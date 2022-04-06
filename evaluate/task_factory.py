@@ -1,12 +1,11 @@
-from tests.res.runner import LearnTask
 from shutil import rmtree
 from pathlib import Path
 
 from common import util
 util.set_dbh_path()
 
-from tests.res.runner import LearnTask
-from tests.res import params
+from dbh_api.res.runner import LearnTask
+from dbh_api.res import params
 
 class TaskFactory:
     class DNNCLearnTask(LearnTask):
