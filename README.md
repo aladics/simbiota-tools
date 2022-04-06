@@ -39,6 +39,13 @@ python -m cdf.create_figures.run
 ```
 By default results will be in `cdf/create_figures/results`
 
+### Run evaluation
+Evaluate the best models on the weekly separated dataset. Set `weekly_root_dir` and `task_id_pattern` for a new run. On a new setup, change at least `eval_dir`, `sandbox_root`. Then:
+
+```Bash
+python -m evaluate.run
+```
+
 ## Other
 
 ### Supervisor related
@@ -55,7 +62,7 @@ An example config with conda env activated:
  stderr_logfile_backups=0
 ```
 
-## Run
+#### Run
 
 ```Bash
 sudo supervisorctl
@@ -68,3 +75,10 @@ Then management goes like
 <start/stop/restart> generate_cdf
 tail generate_cdf stderr
 ```
+
+### Redis related
+This works only on Linux. 
+
+1. Setup a redis server
+2. Setup rq-dashboard
+3. Implement enqueueing into rq. Set `job_timeout` to at least 30m.
