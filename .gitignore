@@ -13,5 +13,6 @@ sandboxes
 common/config.yaml
 common/data/final/*
 common/data/tlsh/*
+common/search_params2.yaml
 
 cdf/create_figures/results

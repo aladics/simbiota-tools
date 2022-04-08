@@ -6,7 +6,7 @@ import click
 from common import util
 from evaluate.task_factory import TaskFactory
 from evaluate import init_input
-    
+
 from dbh_api.res.runner import run_train_test_pair
 
 class NpEncoder(json.JSONEncoder):
@@ -50,9 +50,9 @@ def is_aready_done(task_id : str):
 def get_best_hyper(usecase_type : str):
     with util.get_hyper_results_path().open() as f:
         hyper_results = json.load(f)
-        
+
     return [result[usecase_type]["best_params"] for result in hyper_results.values()]
-        
+
 
 def run_on_all_learns(usecase_type : str, architecture : str, n_run : int, n_week : int):
     shared_params = {
@@ -75,27 +75,27 @@ def run_on_all_learns(usecase_type : str, architecture : str, n_run : int, n_wee
         ],
         'return_results' : True
     }
-    
-    
+
+
     task_id = util.generate_task_id(architecture, n_run, n_week)
     if is_aready_done(task_id):
         return
-    
+
     root_dir = util.get_eval_input_path() / architecture / str(n_run)
     train_csv = root_dir / f"{architecture}_merged_week_{n_week}_train.csv"
     test_csv = root_dir / f"{architecture}_merged_week_{n_week}_valid.csv"
-    
+
     results = []
     factory = TaskFactory(shared_params)
-    
+
     # Linear has to be done separately as it has not been hypertuned
     learn_task = factory.get("linear", task_id)
     run_train_test_pair(learn_task, train_csv, test_csv, results)
-    
+
     for best_result in get_best_hyper(usecase_type):
         learn_task = factory.get(best_result, task_id)
         run_train_test_pair(learn_task, train_csv, test_csv, results)
-    
+
     result_path = util.get_eval_results_path() / str(n_run) / f"{task_id}.json"
     result_path.parent.mkdir(parents=True, exist_ok=True)
     with result_path.open("w") as f:
@@ -109,18 +109,23 @@ def run_on_weeks(architecture : str, usecase_type : str):
     for n_run in range(config['start_run'], config['end_run'] + 1):
         for n_week in range(config['start_week'], config['end_week'] + 1):
             run_on_all_learns(usecase_type, architecture, n_run, n_week)
-            
+
 def run_on_architecture(architecture : str, usecase_type : str, init : bool):
     if init:
         init_input.init_all(architecture)
     run_on_weeks(architecture, usecase_type)
 
 @click.command()
-@click.option("--usecase_type", help = "The usecase type that correspond to the metaparams (alpha, beta etc.)", required = True)
+@click.option("--usecase-type", help = "The usecase type that correspond to the metaparams (alpha, beta etc.)", required = True)
 @click.option("--init/--no-init", default = False, help = "Indicates if data should be initialized.")
-def run(usecase_type, init):
-    run_on_architecture("arm", usecase_type, init)
-    run_on_architecture("mips", usecase_type, init)
+@click.option("--single", help = "Define a single run in the form of: <arch>-<n-run><n-week>", default = None)
+def run(usecase_type, init, single):
+    if single:
+        pars = single.split("-")
+        run_on_all_learns(usecase_type, pars[0], int(pars[1]), int(pars[2]))
+    else:
+        run_on_architecture("arm", usecase_type, init)
+        run_on_architecture("mips", usecase_type, init)
 
 if __name__ == "__main__":
     run()
