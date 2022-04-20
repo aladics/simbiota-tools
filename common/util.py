@@ -3,6 +3,8 @@ import sys
 
 import yaml
 
+from cdf.function.function import get as get_cdf_value
+
 CONFIG_PATH = "common/config.yaml"
 
 def get_config():
@@ -46,4 +48,69 @@ def get_hyper_results_path():
 def generate_task_id(architecture : str, n_run : int, n_week : int):
     pattern : str = CONFIG['task_id_pattern']
 
-    return pattern.replace("<architecture>", architecture).replace("<n_run>", str(n_run)).replace("<n_week>", str(n_week)) 
+    return pattern.replace("<architecture>", architecture).replace("<n_run>", str(n_run)).replace("<n_week>", str(n_week))
+
+def get_usecase_weights(usecase : str):
+    return CONFIG['hyper_metaparams'][usecase]
+
+def get_model_names():
+    return CONFIG['model_names']
+
+def get_weeks_range():
+    return range(CONFIG['start_week'], CONFIG['end_week'] + 1)
+
+def get_runs_range():
+    return range(CONFIG['start_run'], CONFIG['end_run'] + 1)
+
+def get_arch_types():
+    return CONFIG['architecture_types']
+
+def get_eval_ranks_path():
+    return Path(CONFIG['eval_dir']) / "ranks"
+
+def get_metric_names():
+    return CONFIG['metric_names']
+
+def get_ranks_run_dir(n_run : int, arch : str):
+    return get_eval_ranks_path() / str(n_run) / arch
+
+def get_ranks_data_path():
+    return get_eval_ranks_path() / 'ranks_data.json'
+    
+
+def get_u_score(metaparam_vals, parsed_result, model_name : str):
+    """Get the utility score for a model result.
+    
+    Parameters
+    ----------
+    metaparam_vals : dict[str, float]
+        The dictionary containing the alpha, beta, gamma, delta parameters
+    parsed_result : dict[Any, Any]
+        The dictionary containing a specific model's results.
+    model_name : str
+        The name of the model that the parsed result correspond to.
+        
+    Returns
+    -------
+    tuple[str, float]
+        A tuple of the model parameters and the model's utility score (a value in the [0,1] interval)
+    """
+        
+    prec = metaparam_vals['alpha'] * parsed_result['test']['precision']
+    recall = metaparam_vals['beta'] * parsed_result['test']['recall']
+    
+    # Linear model has no hyperparameters, so the CDFs for both time and memory is always 1
+    if model_name == "linear":
+        memory = metaparam_vals['gamma'] * 1
+        time = metaparam_vals['delta'] * 1
+        return parsed_result['strategy'], prec + recall + memory + time
+    
+    cdf_func_params = ["--cache", get_resolved_path(CONFIG['cdf_func_cache_dir']), "--source", get_resolved_path(CONFIG['cdf_results_dir']),
+                       "--model", model_name, "--metric", "memory", "--value", parsed_result['memory']]
+    memory = metaparam_vals['gamma'] * get_cdf_value(cdf_func_params, standalone_mode = False)
+    
+    cdf_func_params[7] = "time"
+    cdf_func_params[9] = parsed_result['prediction time']
+    time = metaparam_vals['delta'] * get_cdf_value(cdf_func_params, standalone_mode = False)
+    
+    return parsed_result['strategy'], prec + recall + memory + time

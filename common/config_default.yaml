@@ -57,17 +57,36 @@ eval_progress_json: eval_progress.json
 sandbox_root: <...>/common/data/sandbox
 task_id_pattern: tlsh_<architecture>_<n_run>_<n_week>
 
-architecture_types: [
-  "arm",
-  "mips"
-]
-
 start_week: 38
 end_week: 89
 start_run: 1
 end_run: 12
 weekly_prefix: <architecture>_<label>_week_
 boosting_filename: <architecture>_<label>_boosting
+
+architecture_types: [
+  "arm",
+  "mips"
+]
+
+model_names: [
+  'linear',
+  'logistic',
+  'adaboost',
+  'forest',
+  'svm',
+  'tree',
+  'knn',
+  'sdnnc',
+  'cdnnc'
+]
+
+metric_names: [
+  'precision',
+  'recall', 
+  'memory',
+  'time'
+]
 
 ############################################ DWF RELATED ############################################
 dbh_path : dbh_path

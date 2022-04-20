@@ -7,12 +7,12 @@ import json
 import numpy as np
 import pandas as pd
 
-import common.util as util
+from common import util
 
 def validate_file(ctx, param, value):
     path = Path(ctx.params['source_dir']) / (value + ".json")
     if not path.exists():
-        raise click.BadParameter(f"No file present for model '{path.name}' in source dir '{path.parent}'")
+        raise click.BadParameter(f"No file present for model '{path.stem}', missing file: '{str(path.resolve())}'")
     
     return value + ".json"
 
