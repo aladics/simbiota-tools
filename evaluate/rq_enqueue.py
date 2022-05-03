@@ -6,7 +6,7 @@ from common import util
 import click
 
 @click.command()
-@click.option("--usecase_type", help = "The usecase type that correspond to the metaparams (alpha, beta etc.)", required = True)
+@click.option("--usecase-type", help = "The usecase type that correspond to the metaparams (alpha, beta etc.)", required = True)
 def run(usecase_type):
     queue = Queue(name = 'simbiota', connection = Redis())
     enqueue_all_architecutres_by_week(queue, usecase_type)

@@ -1,10 +1,15 @@
 from pathlib import Path
-
-from requests import head
-from common import util
-from math import isclose
-
 import json
+from math import isclose
+from tkinter.tix import Tree
+
+import click
+
+from common import util
+
+
+
+
 
 def get_dense_ranks(ranks_dict):
     dense_ranks = []
@@ -139,7 +144,7 @@ def dump_metric(ranks_by_model, metric_name, arch, root_path):
 def get_rank_csv_header():
     header = ['rank', 'model_name']
     header += util.get_metric_names()
-    header.append('utlity_score')
+    header.append('utility_score')
     return header
     
 def dump_ranks(sorted_models, arch, root_path):
@@ -156,6 +161,7 @@ def dump_ranks(sorted_models, arch, root_path):
         for metric_name in util.get_metric_names():
             curr_line.append(str(model_stats['ranks'][metric_name]['normalized']))
         curr_line.append(str(model_stats['utility_score']))
+        rank += 1
         
         append_str_to_csv(create_csv_line(curr_line), ranks_path)
         
@@ -171,8 +177,9 @@ def dump_csvs(ranks_by_model):
             for metric_name in util.get_metric_names():
                 dump_metric(ranks_by_model[n_run], metric_name, arch, ranks_run_dir)
                 
-
-def main(usecase : str):
+@click.command()
+@click.option("--usecase-type", help = "The usecase type that correspond to the metaparams (alpha, beta etc.)", required = True)
+def run(usecase_type : str):
     
     runs_data = {}
     for n_run in util.get_runs_range():
@@ -212,10 +219,8 @@ def main(usecase : str):
     with util.get_ranks_data_path().open("w") as ranks_fp:             
         json.dump(runs_data, ranks_fp, indent=2)
         
-    ranks_by_model = get_ranks_by_model(runs_data, usecase)
+    ranks_by_model = get_ranks_by_model(runs_data, usecase_type)
     dump_csvs(ranks_by_model)
     
 if __name__ == "__main__":
-    usecase = 'Smart home gateway'
-    main(usecase)
-            
+    run()

@@ -46,6 +46,13 @@ Evaluate the best models on the weekly separated dataset. Set `weekly_root_dir` 
 python -m evaluate.run
 ```
 
+### Run ranking generator
+Generate the rankings for the best models per model types. Set the correct usecase string in `evaluate/generate_ranking.py`'s `main` method. 
+
+˘˘˘Bash
+python -m evaluate.generate_rankings
+˘˘˘
+
 ## Other
 
 ### Supervisor related
