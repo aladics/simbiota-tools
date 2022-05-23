@@ -15,8 +15,8 @@ import numpy as np
 from common import util
  
 util.set_dbh_path()
-from tests.res import params
-from tests.res.runner import LearnTask, run_train_test_pair, save_results_to_json
+from dbh_api.res import params
+from dbh_api.res.runner import LearnTask, run_train_test_pair, save_results_to_json
 
 
 class TaskFactory:

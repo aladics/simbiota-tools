@@ -1,15 +1,26 @@
 ########################################## DATASET RELATED ##########################################
+# Settings used project wide but mainly in the CDF generation
+
 raw_train_csvs: 
   - train_file_1
   - train_file_2
+  - ...
+  - test_file_n
 result_train_csv: result_train_file
 raw_test_csvs:
   - test_file_1
   - test_file_2
+  - ...
+  - test_file_n
 result_test_csv: result_test_file
 times_csvs:
  - shas_with_times_file_1
  - shas_with_times_file_2
+ - ...
+ - shas_with_times_file_n
+
+# Number of features in the csvs (columns number) 
+feature_num: number_of_features
 
 ########################################### MODEL RELATED ###########################################
 search_params_file: search_params_file
