@@ -107,6 +107,10 @@ def get_feature_num() -> int:
     return CONFIG["feature_num"]
 
 
+def is_standardize() -> bool:
+    return CONFIG["standardize"]
+
+
 def get_u_score(metaparam_vals, parsed_result, model_name: str):
     """Get the utility score for a model result.
 
