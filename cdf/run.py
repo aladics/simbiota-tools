@@ -2,7 +2,7 @@ from pathlib import Path
 
 from common.data import create_dataset
 from common import model_generator
-from common.util import get_config, is_standardize
+from common.util import get_config, get_standardization
 
 
 ############################################# CONSTANS #############################################
@@ -30,10 +30,6 @@ def load_constants(conf):
 
 
 def generate_models_for_cdf(train_path, test_path, results_path, search_params, n):
-    standardize_str = "--dont-standardize"
-    if is_standardize():
-        standardize_str = "--standardize"
-
     return model_generator.run(
         [
             "--search-params",
@@ -46,7 +42,7 @@ def generate_models_for_cdf(train_path, test_path, results_path, search_params, 
             n,
             "--save-path",
             str(results_path.resolve()),
-            standardize_str,
+            get_standardization(),
         ],
         standalone_mode=False,
     )

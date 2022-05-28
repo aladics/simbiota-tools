@@ -111,6 +111,12 @@ def is_standardize() -> bool:
     return CONFIG["standardize"]
 
 
+def get_standardization() -> str:
+    if is_standardize():
+        return "--standardize"
+    return "--dont-standardize"
+
+
 def get_u_score(metaparam_vals, parsed_result, model_name: str):
     """Get the utility score for a model result.
 
