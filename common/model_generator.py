@@ -1,4 +1,3 @@
-import sys
 from pathlib import Path
 import itertools
 from shutil import rmtree
@@ -212,33 +211,13 @@ def get_logger(log_file):
     "--n", default=100, help="Number of randomly parametrized models to generate"
 )
 @click.option("--log-file", default="common/model_gen_progress.log")
-@click.option(
-    "--standardize/--dont-standardize",
-    default=False,
-    help = "Set if feature standardization is needed "
-)
-def run(search_params, save_path, train_file, test_file, n, log_file, standardize):
+def run(search_params, save_path, train_file, test_file, n, log_file):
     logger = get_logger(log_file)
 
     with Path(search_params).open() as f:
         params = yaml.safe_load(f)
 
-    shared_params = {
-        "label": "label",
-        "resample": "none",
-        "resample_amount": 0,
-        "seed": 1337,
-        "output": "output",
-        "clean": False,
-        "calc_completeness": True,
-        "preprocess": [
-            ["labels", "binarize"]
-        ],
-        "return_results": True,
-    }
-
-    if standardize:
-        shared_params["preprocess"].append(["features", "standardize"])
+    shared_params = util.get_shared_params()
 
     time_stats = {}
     for key, val in params.items():

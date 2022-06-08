@@ -22,10 +22,12 @@ times_csvs:
 # Number of features in the csvs (columns number) 
 feature_num: number_of_features
 
-standardize: False
 
 ########################################### MODEL RELATED ###########################################
 search_params_file: search_params_file
+
+# Shared params
+standardize: False
 
 # CDF
 cdf_results_dir: json_results_dir

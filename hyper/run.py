@@ -6,7 +6,6 @@ import click
 
 import common.util as util
 import common.model_generator as model_generator
-from cdf.function.function import get as get_cdf_value
 
 
 def generate_models_for_hyper(config):
@@ -29,7 +28,6 @@ def generate_models_for_hyper(config):
             config["n_models_for_hyper"],
             "--save-path",
             str(results_path.resolve()),
-            util.get_standardization(),
         ],
         standalone_mode=False,
     )

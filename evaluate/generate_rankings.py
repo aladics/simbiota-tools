@@ -1,7 +1,6 @@
 from pathlib import Path
 import json
 from math import isclose
-from tkinter.tix import Tree
 
 import click
 

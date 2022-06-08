@@ -167,3 +167,26 @@ def get_u_score(metaparam_vals, parsed_result, model_name: str):
     )
 
     return parsed_result["strategy"], prec + recall + memory + time
+
+
+def get_shared_params():
+    shared_params = {
+        "label": "label",
+        "resample": "none",
+        "resample_amount": 0,
+        "seed": 1337,
+        "output": "output",
+        "clean": False,
+        "calc_completeness": True,
+        "preprocess": [
+            # [
+            #    'features',
+            #    'standardize'
+            # ],
+            ["labels", "binarize"]
+        ],
+        "return_results": True,
+    }
+
+    if is_standardize():
+        shared_params["preprocess"].append(["features", "standardize"])

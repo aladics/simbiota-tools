@@ -58,24 +58,6 @@ def get_best_hyper(usecase_type: str):
 
 
 def run_on_all_learns(usecase_type: str, architecture: str, n_run: int, n_week: int):
-    shared_params = {
-        "label": "label",
-        "resample": "none",
-        "resample_amount": 0,
-        "seed": 1337,
-        "output": "output",
-        "clean": False,
-        "calc_completeness": True,
-        "preprocess": [
-            # [
-            #    'features',
-            #    'standardize'
-            # ],
-            ["labels", "binarize"]
-        ],
-        "return_results": True,
-    }
-
     task_id = util.generate_task_id(architecture, n_run, n_week)
     if is_aready_done(task_id):
         return
@@ -85,7 +67,7 @@ def run_on_all_learns(usecase_type: str, architecture: str, n_run: int, n_week: 
     test_csv = root_dir / f"{architecture}_merged_week_{n_week}_valid.csv"
 
     results = []
-    factory = TaskFactory(shared_params)
+    factory = TaskFactory(util.get_shared_params())
 
     # Linear has to be done separately as it has not been hypertuned
     learn_task = factory.get("linear", task_id)

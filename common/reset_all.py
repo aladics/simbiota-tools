@@ -1,4 +1,3 @@
-from email.policy import default
 from common import util
 from pathlib import Path
 import shutil
