@@ -126,7 +126,7 @@ def get_deliverable_dir() -> Path:
     return Path(CONFIG["deliverable_dir"])
 
 
-def get_feautre_set_name() -> str:
+def get_feature_set_name() -> str:
     return CONFIG["feature_set_name"]
 
 
