@@ -1,6 +1,10 @@
 ########################################## DATASET RELATED ##########################################
 # Settings used project wide but mainly in the CDF generation
 
+# Only for logging purposes, for example tlsh
+feature_set_name: feature_set
+
+
 raw_train_csvs: 
   - train_file_1
   - train_file_2
@@ -35,7 +39,7 @@ cdf_func_cache_dir: cdf_cache_dir
 
 # Hyper
 hyper_results_dir: hyper_results_dir
-hyper_metaparams: 
+usecases: 
   Smart home gateway:
     alpha: 0.6
     beta: 0.4
@@ -107,6 +111,8 @@ metric_names: [
   'memory',
   'time'
 ]
+
+deliverable_dir: deliverable_root
 
 ############################################ DWF RELATED ############################################
 dbh_path : dbh_path

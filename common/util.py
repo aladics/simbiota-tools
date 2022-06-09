@@ -1,5 +1,6 @@
 from pathlib import Path
 import sys
+from typing import List
 
 import yaml
 
@@ -22,17 +23,17 @@ def reload_config():
     CONFIG = get_config()
 
 
-def get_sha_path_from_result(result_path_str: str):
+def get_sha_path_from_result(result_path_str: str) -> str:
     return result_path_str.replace(
         Path(result_path_str).stem, Path(result_path_str).stem + "_sha"
     )
 
 
-def get_resolved_path(path_str):
+def get_resolved_path(path_str) -> str:
     return str(Path(path_str).resolve())
 
 
-def set_dbh_path():
+def set_dbh_path() -> None:
     dbh_path_str = CONFIG["dbh_path"]
 
     if not Path(dbh_path_str).exists():
@@ -41,23 +42,23 @@ def set_dbh_path():
     sys.path.append(str(Path(dbh_path_str).resolve()))
 
 
-def get_eval_progress_path():
+def get_eval_progress_path() -> Path:
     return Path(CONFIG["eval_dir"]) / CONFIG["eval_progress_json"]
 
 
-def get_eval_input_path():
+def get_eval_input_path() -> Path:
     return Path(CONFIG["eval_dir"]) / "inputs"
 
 
-def get_eval_results_path():
+def get_eval_results_path() -> Path:
     return Path(CONFIG["eval_dir"]) / "results"
 
 
-def get_hyper_results_path():
+def get_hyper_results_path() -> Path:
     return Path(CONFIG["hyper_results_dir"]) / "results.json"
 
 
-def generate_task_id(architecture: str, n_run: int, n_week: int):
+def generate_task_id(architecture: str, n_run: int, n_week: int) -> str:
     pattern: str = CONFIG["task_id_pattern"]
 
     return (
@@ -68,10 +69,14 @@ def generate_task_id(architecture: str, n_run: int, n_week: int):
 
 
 def get_usecase_weights(usecase: str):
-    return CONFIG["hyper_metaparams"][usecase]
+    return CONFIG["usecases"][usecase]
 
 
-def get_model_names():
+def get_usecase_names() -> List[str]:
+    return CONFIG["usecases"].keys()
+
+
+def get_model_names() -> List[str]:
     return CONFIG["model_names"]
 
 
@@ -91,7 +96,7 @@ def get_eval_ranks_path() -> Path:
     return Path(CONFIG["eval_dir"]) / "ranks"
 
 
-def get_metric_names():
+def get_metric_names() -> List[str]:
     return CONFIG["metric_names"]
 
 
@@ -115,6 +120,14 @@ def get_standardization() -> str:
     if is_standardize():
         return "--standardize"
     return "--dont-standardize"
+
+
+def get_deliverable_dir() -> Path:
+    return Path(CONFIG["deliverable_dir"])
+
+
+def get_feautre_set_name() -> str:
+    return CONFIG["feature_set_name"]
 
 
 def get_u_score(metaparam_vals, parsed_result, model_name: str):
