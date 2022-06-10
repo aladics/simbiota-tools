@@ -203,3 +203,5 @@ def get_shared_params():
 
     if is_standardize():
         shared_params["preprocess"].append(["features", "standardize"])
+
+    return shared_params

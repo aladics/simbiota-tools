@@ -16,3 +16,4 @@ common/data/tlsh/*
 common/search_params2.yaml
 
 cdf/create_figures/results
+run_ranker.sh

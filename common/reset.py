@@ -5,19 +5,22 @@ import shutil
 import click
 
 
-def recreate_empty_dir(dir_path: Path):
+def recreate_empty_dir(dir_path: Path) -> None:
     """Deletes dir_path if exists then recreates it as empty."""
 
     if dir_path.exists():
         shutil.rmtree(str(dir_path.resolve()))
     dir_path.mkdir(exist_ok=True, parents=True)
 
+def remove_file(path : Path) -> None:
+    if path.exists():
+        path.unlink()
 
 @click.command()
 @click.option(
     "--mode",
     type=click.Choice(
-        ["all", "hyper", "hyper_data", "cdf", "eval"], case_sensitive=False
+        ["all", "hyper", "hyper_data", "cdf", "eval", "eval-progress"], case_sensitive=False
     ),
     default="all",
 )
@@ -39,7 +42,14 @@ def run(mode):
         recreate_empty_dir(util.get_eval_input_path())
         recreate_empty_dir(util.get_eval_results_path())
         recreate_empty_dir(Path(config["sandbox_root"]))
-        util.get_eval_progress_path().unlink()
+        recreate_empty_dir(util.get_eval_ranks_path())
+        remove_file(util.get_eval_progress_path())
+
+    if mode == "all" or mode == "eval-progress":
+        recreate_empty_dir(util.get_eval_results_path())
+        recreate_empty_dir(Path(config["sandbox_root"]))
+        recreate_empty_dir(util.get_eval_ranks_path())
+        remove_file(util.get_eval_progress_path())
 
     print("Environment reset done.")
 
