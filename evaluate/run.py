@@ -12,9 +12,9 @@ from dbh_api.res.runner import run_train_test_pair
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
-        if isinstance(obj, np.integer):
+        if isinstance(obj, np.integer):  # type: ignore
             return int(obj)
-        if isinstance(obj, np.floating):
+        if isinstance(obj, np.floating):  # type: ignore
             return float(obj)
         if isinstance(obj, np.ndarray):
             return obj.tolist()

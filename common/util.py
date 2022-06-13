@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys
-from typing import List
+from typing import Any, Dict, List, Tuple
 
 import yaml
 
@@ -18,7 +18,7 @@ def get_config():
 CONFIG = get_config()
 
 
-def reload_config():
+def reload_config() -> None:
     global CONFIG
     CONFIG = get_config()
 
@@ -80,15 +80,15 @@ def get_model_names() -> List[str]:
     return CONFIG["model_names"]
 
 
-def get_weeks_range():
+def get_weeks_range() -> range:
     return range(CONFIG["start_week"], CONFIG["end_week"] + 1)
 
 
-def get_runs_range():
+def get_runs_range() -> range:
     return range(CONFIG["start_run"], CONFIG["end_run"] + 1)
 
 
-def get_arch_types():
+def get_arch_types() -> List[str]:
     return CONFIG["architecture_types"]
 
 
@@ -130,7 +130,9 @@ def get_feature_set_name() -> str:
     return CONFIG["feature_set_name"]
 
 
-def get_u_score(metaparam_vals, parsed_result, model_name: str):
+def get_u_score(
+    metaparam_vals: Dict[str, float], parsed_result: Dict[str, Any], model_name: str
+) -> Tuple[Dict[str, Any], float]:
     """Get the utility score for a model result.
 
     Parameters
@@ -182,7 +184,7 @@ def get_u_score(metaparam_vals, parsed_result, model_name: str):
     return parsed_result["strategy"], prec + recall + memory + time
 
 
-def get_shared_params():
+def get_shared_params() -> Dict[str, Any]:
     shared_params = {
         "label": "label",
         "resample": "none",

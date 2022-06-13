@@ -35,6 +35,9 @@ def main(sources, result: str):
     # Drop SHA row
     final_df = final_df.drop(labels="sha", axis=1)
 
+    # Drop rows with NaN values
+    final_df = final_df.dropna()
+
     # Flip labels
     final_df["label"] = (~(final_df["label"].astype(bool))).astype(int)
 
