@@ -150,8 +150,9 @@ def get_u_score(
         A tuple of the model parameters and the model's utility score (a value in the [0,1] interval)
     """
 
-    prec = metaparam_vals["alpha"] * parsed_result["test"]["precision"]
-    recall = metaparam_vals["beta"] * parsed_result["test"]["recall"]
+    
+    recall = metaparam_vals["alpha"] * parsed_result["test"]["recall"]
+    prec = metaparam_vals["beta"] * parsed_result["test"]["precision"]
 
     # Linear model has no hyperparameters, so the CDFs for both time and memory is always 1
     if model_name == "linear":
