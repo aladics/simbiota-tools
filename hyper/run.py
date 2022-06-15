@@ -47,13 +47,13 @@ def generate_hyper_scores(config):
         parsed_res = parse_model_result(hyper_res)
         scores[model_name] = {}
 
-        for usecase_name in config["hyper_metaparams"]:
+        for usecase_name in config["usecases"]:
             scores[model_name][usecase_name] = {}
             scores[model_name][usecase_name]["all"] = {}
             scores[model_name][usecase_name]["best_score"] = 0
 
         for model_data in parsed_res:
-            for usecase_name, metaparam_vals in config["hyper_metaparams"].items():
+            for usecase_name, metaparam_vals in config["usecases"].items():
                 model_params, score = util.get_u_score(
                     metaparam_vals, model_data, model_name
                 )
