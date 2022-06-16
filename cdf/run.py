@@ -1,4 +1,5 @@
 from pathlib import Path
+import click
 
 from common.data import create_dataset
 from common import model_generator
@@ -8,17 +9,17 @@ from common.util import get_config
 ############################################# CONSTANS #############################################
 CONFIG_PATH = "common/config.yaml"
 
-RAW_TRAIN_CSVS = None
-TRAIN_CSV = None
-RAW_TEST_CSVS = None
-TEST_CSV = None
-SEARCH_PARAMS = None
-RESULTS = None
+RAW_TRAIN_CSVS = []
+TRAIN_CSV = ""
+RAW_TEST_CSVS = []
+TEST_CSV = ""
+SEARCH_PARAMS = ""
+RESULTS = ""
 
 #####################################################################################################
 
 
-def load_constants(conf):
+def load_constants(conf) -> None:
     global RAW_TRAIN_CSVS, TRAIN_CSV, RAW_TEST_CSVS, TEST_CSV, SEARCH_PARAMS, RESULTS
 
     RAW_TRAIN_CSVS = conf["raw_train_csvs"]
@@ -29,7 +30,9 @@ def load_constants(conf):
     RESULTS = conf["cdf_results_dir"]
 
 
-def generate_models_for_cdf(train_path, test_path, results_path, search_params, n):
+def generate_models_for_cdf(
+    train_path: Path, test_path: Path, results_path: Path, search_params : Path, n : int
+) -> None:
     return model_generator.run(
         [
             "--search-params",
@@ -47,13 +50,24 @@ def generate_models_for_cdf(train_path, test_path, results_path, search_params, 
     )
 
 
-def init_dirs(train_path: Path, test_path: Path, results_path: Path):
+def create_train_test_sets() -> None:
+    create_dataset.main([*RAW_TRAIN_CSVS, TRAIN_CSV], standalone_mode=False)
+    create_dataset.main([*RAW_TEST_CSVS, TEST_CSV], standalone_mode=False)
+
+
+def init_dirs(train_path: Path, test_path: Path, results_path: Path) -> None:
     train_path.parent.mkdir(exist_ok=True, parents=True)
     test_path.parent.mkdir(exist_ok=True, parents=True)
     results_path.mkdir(exist_ok=True, parents=True)
 
 
-def main():
+@click.command()
+@click.option(
+    "--only-datasets/--not-only-datasets",
+    help="Create only datasets or run the cdf generation too",
+    default=False,
+)
+def main(only_datasets : bool):
     conf = get_config()
     load_constants(conf)
 
@@ -63,23 +77,17 @@ def main():
     search_params_path = Path(SEARCH_PARAMS)
 
     init_dirs(train_path, test_path, results_path)
+    create_train_test_sets()
 
-    if not train_path.exists():
-        create_dataset.main([*RAW_TRAIN_CSVS, TRAIN_CSV], standalone_mode=False)
-
-    if not test_path.exists():
-        create_dataset.main([*RAW_TEST_CSVS, TEST_CSV], standalone_mode=False)
-
-    times = {}
-    times[conf["n_models_for_cdf"]] = generate_models_for_cdf(
-        train_path,
-        test_path,
-        results_path,
-        search_params_path,
-        conf["n_models_for_cdf"],
-    )
-
-    print(times)
+    if not only_datasets:
+        times = {}
+        times[conf["n_models_for_cdf"]] = generate_models_for_cdf(
+            train_path,
+            test_path,
+            results_path,
+            search_params_path,
+            conf["n_models_for_cdf"],
+        )
 
 
 if __name__ == "__main__":
