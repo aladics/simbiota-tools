@@ -53,13 +53,13 @@ usecases:
   Battery operated personal device:
     alpha: 0.4
     beta: 0.1
-    gamma: 0.4
-    delta: 0.1
+    gamma: 0.1
+    delta: 0.4
   Solar powered tiny device:
     alpha: 0.4
     beta: 0.1
-    gamma: 0.1
-    delta: 0.4
+    gamma: 0.4
+    delta: 0.1
   Patient monitoring sensor:
     alpha: 0.3
     beta: 0.2

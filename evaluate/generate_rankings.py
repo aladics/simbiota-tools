@@ -1,27 +1,11 @@
 from pathlib import Path
 import json
 from math import isclose
+from typing import Dict, List
 
 import click
 
 from common import util
-
-
-def get_dense_ranks(ranks_dict):
-    dense_ranks = []
-    ranks = list(ranks_dict.values())
-
-    curr_rank = 0
-    for idx in range(0, len(ranks)):
-        if idx == 0:
-            dense_ranks.append(curr_rank)
-        elif ranks[idx - 1] == ranks[idx]:
-            dense_ranks.append(curr_rank)
-        else:
-            curr_rank += 1
-            dense_ranks.append(curr_rank)
-
-    return {k: v for k, v in zip(ranks_dict.keys(), dense_ranks)}
 
 
 def sort_dict(dict_, reverse=False):
@@ -32,17 +16,37 @@ def sort_dict(dict_, reverse=False):
     }
 
 
-def get_ranks(metric_scores):
+def get_rank_score(val: float, vals: List[float], reverse: bool) -> int:
+    """
+    Get the rank score for a model.
+
+    Calculated as (n - 1) - k where:
+    n: number of models
+    k: other models that achieve better score.
+
+    Best score is n - 1, worst score is 0.
+
+    If :param reverse is True, the lower values mean better score, otherwise higher values mean better score.
+    """
+    n_models = len(util.get_model_names())
+
+    if not reverse:
+        k = sum(val_ > val for val_ in vals if not isclose(val, val_, rel_tol=1e-14))
+    else:
+        k = sum(val_ < val for val_ in vals if not isclose(val, val_, rel_tol=1e-14))
+
+    return (n_models - 1) - k
+
+
+def get_ranks(metric_scores: Dict[str, float], reverse: bool = False) -> Dict[str, int]:
     ranks = {}
     keys = list(metric_scores.keys())
     vals = list(metric_scores.values())
     for idx in range(len(vals)):
-        curr_val = vals[idx]
-        rank = list(isclose(curr_val, val, rel_tol=1e-12) for val in vals).index(True)
-        ranks[keys[idx]] = rank + 1
-        continue
+        rank = get_rank_score(vals[idx], vals, reverse)
+        ranks[keys[idx]] = rank
 
-    return get_dense_ranks(ranks)
+    return ranks
 
 
 def get_ranks_by_weeks(runs_data, n_run, arch, model_name, metric):
@@ -51,7 +55,7 @@ def get_ranks_by_weeks(runs_data, n_run, arch, model_name, metric):
         res.append(runs_data[n_run][n_week][arch]["ranks"][metric][model_name])
 
     week_count = len(util.get_weeks_range())
-    all_models_rank_sum = week_count * len(util.get_model_names())
+    all_models_rank_sum = week_count * (len(util.get_model_names()) - 1)
     current_model_rank_sum = sum(res)
     return (
         res,
@@ -252,10 +256,10 @@ def run(usecase_type: str):
                     runs_data[n_run][n_week][arch]["scores"]["recall"]
                 )
                 runs_data[n_run][n_week][arch]["ranks"]["memory"] = get_ranks(
-                    runs_data[n_run][n_week][arch]["scores"]["memory"]
+                    runs_data[n_run][n_week][arch]["scores"]["memory"], reverse=True
                 )
                 runs_data[n_run][n_week][arch]["ranks"]["time"] = get_ranks(
-                    runs_data[n_run][n_week][arch]["scores"]["time"]
+                    runs_data[n_run][n_week][arch]["scores"]["time"], reverse=True
                 )
 
     util.get_eval_ranks_path().mkdir(parents=True, exist_ok=True)
